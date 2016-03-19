@@ -22,7 +22,7 @@ git:
 
 # opt-in Ubuntu Trusty
 sudo: required
-dist: trusty
+dist: xenial
 cache: ccache
 
 install:
@@ -31,7 +31,7 @@ install:
           pip install --user cpp-coveralls
           sudo add-apt-repository --yes ppa:chewing/chewing
           sudo apt-get update
-          sudo apt-get install --yes cmake help2man qt5-default qttools5-dev qttools5-dev-tools libchewing3-dev
+          sudo apt-get install --yes cmake help2man qt5-default qttools5-dev qttools5-dev-tools libchewing3-dev libgtest-dev
           gcc --version
           g++ --version
           gcov --version
@@ -62,7 +62,7 @@ script:
     - make -j2 check
 
 after_success:
-    - if [ x$COVERALLS == xyes ]; then coveralls --exclude gmock --exclude test --exclude-pattern '.*CMake[^/]+\.c(?:pp)?' --exclude-pattern '.*_automoc.cpp'; fi
+    - if [ x$COVERALLS == xyes ]; then coveralls --exclude test --exclude-pattern '.*CMake[^/]+\.c(?:pp)?' --exclude-pattern '.*_automoc.cpp'; fi
 
 after_script:
     - if [ "$use_ccache" = true ]; then ccache --show-stats ; fi

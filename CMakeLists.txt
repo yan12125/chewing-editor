@@ -99,7 +99,6 @@ install(
 
 include_directories(
     ${PROJECT_BINARY_DIR}/include
-    ${PROJECT_SOURCE_DIR}/gmock/gtest/include
     ${PROJECT_SOURCE_DIR}/src/exporter
     ${PROJECT_SOURCE_DIR}/src/importer
     ${PROJECT_SOURCE_DIR}/src/model
@@ -253,7 +252,6 @@ endif()
 
 # testing
 enable_testing()
-add_subdirectory(gmock)
 
 file(GLOB run-test_src
     test/*.cpp
@@ -262,7 +260,8 @@ add_executable(run-test
     ${run-test_src}
 )
 target_link_libraries(run-test
-    gmock
+    gtest
+    gtest_main
 
     exporter
     importer
