@@ -5,8 +5,6 @@ CMake*
 !/cmake/*.cmake
 Makefile
 
-gmock/
-
 *moc*
 qrc*
 *.qrc.depends
