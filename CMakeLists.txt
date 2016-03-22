@@ -48,7 +48,6 @@ add_definitions(-DTESTDATA="${PROJECT_SOURCE_DIR}/test/data")
 find_package(PkgConfig)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5LinguistTools)
-find_package(GTest REQUIRED)
 
 # libchewing
 # MODIFY IF NEEDED, e.g. ${CMAKE_CURRENT_SOURCE_DIR}/libchewing/lib/*.lib
@@ -254,6 +253,7 @@ endif()
 
 # testing
 enable_testing()
+find_package(GTest REQUIRED)
 
 file(GLOB run-test_src
     test/*.cpp
@@ -262,7 +262,8 @@ add_executable(run-test
     ${run-test_src}
 )
 target_link_libraries(run-test
-    ${GTEST_BOTH_LIBRARIES}
+    GTest::GTest
+    GTest::Main
 
     exporter
     importer
