@@ -48,6 +48,7 @@ add_definitions(-DTESTDATA="${PROJECT_SOURCE_DIR}/test/data")
 find_package(PkgConfig)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5LinguistTools)
+find_package(GTest REQUIRED)
 
 # libchewing
 # MODIFY IF NEEDED, e.g. ${CMAKE_CURRENT_SOURCE_DIR}/libchewing/lib/*.lib
@@ -107,6 +108,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src/view
     ${CHEWING_INCLUDE_DIRS}
     ${Qt5Widgets_INCLUDES}
+    ${GTEST_INCLUDE_DIRS}
 )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform_apple.cmake)
@@ -260,8 +262,7 @@ add_executable(run-test
     ${run-test_src}
 )
 target_link_libraries(run-test
-    gtest
-    gtest_main
+    ${GTEST_BOTH_LIBRARIES}
 
     exporter
     importer
