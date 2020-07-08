@@ -1,8 +1,6 @@
 language: cpp
 
-os:
-    - linux
-    - osx
+os: linux
 
 env:
     matrix:
@@ -11,18 +9,24 @@ env:
         - CTEST_OUTPUT_ON_FAILURE=1 OPTION='-DCMAKE_CXX_FLAGS=-O0 -DENABLE_GCOV=yes' COVERALLS=yes
 
 matrix:
-    exclude:
+    include:
+        # To test source-only gtest/gmock packages
+        - os: linux
+          dist: xenial
+          env: CTEST_OUTPUT_ON_FAILURE=1
+        - os: linux
+          dist: bionic
+          env: CTEST_OUTPUT_ON_FAILURE=1
+        - os: linux
         - os: osx
-          env: CTEST_OUTPUT_ON_FAILURE=1 CFLAGS='-fsanitize=address'
-        - os: osx
-          env: CTEST_OUTPUT_ON_FAILURE=1 OPTION='-DCMAKE_CXX_FLAGS=-O0 -DENABLE_GCOV=yes' COVERALLS=yes
+          env: CTEST_OUTPUT_ON_FAILURE=1
 
 git:
     depth: 1
 
-# opt-in Ubuntu Trusty
+# opt-in Ubuntu Focal
 sudo: required
-dist: xenial
+dist: focal
 cache: ccache
 
 install:

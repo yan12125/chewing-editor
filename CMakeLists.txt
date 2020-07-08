@@ -253,7 +253,25 @@ endif()
 
 # testing
 enable_testing()
-find_package(GTest REQUIRED)
+find_package(GTest)
+if (GTEST_FOUND AND FALSE)
+    set(GTEST_LIBS GTest::GTest GTest::Main)
+else()
+    # /usr/src/googletest is used by Ubuntu 18.04
+    # /usr/src/gtest is used by Ubuntu 16.04
+    foreach (GTEST_DIR /usr/src/googletest /usr/src/gtest)
+        message(STATUS "Checking gtest in ${GTEST_DIR}")
+        if (EXISTS ${GTEST_DIR})
+            add_subdirectory(${GTEST_DIR} gtest)
+            set(GTEST_LIBS gtest gtest_main)
+            break()
+        endif()
+    endforeach()
+endif()
+
+if (NOT DEFINED GTEST_LIBS)
+    message(SEND_ERROR "Unable to find gtest")
+endif()
 
 file(GLOB run-test_src
     test/*.cpp
@@ -262,8 +280,7 @@ add_executable(run-test
     ${run-test_src}
 )
 target_link_libraries(run-test
-    GTest::GTest
-    GTest::Main
+    ${GTEST_LIBS}
 
     exporter
     importer
