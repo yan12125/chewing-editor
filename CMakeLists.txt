@@ -27,7 +27,7 @@ cmake_policy(SET CMP0020 NEW)
 include(GNUInstallDirs)
 
 if(${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS "-std=c++11 -g -O2 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-std=c++17 -g -O0 ${CMAKE_CXX_FLAGS}")
 
     option(ENABLE_GCOV "Coverage support" false)
     if(ENABLE_GCOV)
@@ -46,8 +46,8 @@ endif()
 add_definitions(-DTESTDATA="${PROJECT_SOURCE_DIR}/test/data" -DQT_DISABLE_DEPRECATED_BEFORE=0x050e00)
 
 find_package(PkgConfig)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5LinguistTools)
+find_package(Qt6Widgets REQUIRED)
+find_package(Qt6LinguistTools)
 
 # libchewing
 # MODIFY IF NEEDED, e.g. ${CMAKE_CURRENT_SOURCE_DIR}/libchewing/lib/
@@ -68,7 +68,7 @@ endif()
 # Qt library
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(QT_VERSION 5)
+set(QT_VERSION 6)
 
 # Git describe
 find_package(Git)
@@ -109,7 +109,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src/util
     ${PROJECT_SOURCE_DIR}/src/view
     ${CHEWING_INCLUDE_DIRS}
-    ${Qt5Widgets_INCLUDES}
+    ${Qt6Widgets_INCLUDES}
 )
 
 link_directories(${CHEWING_LIBRARY_DIRS})
@@ -117,7 +117,7 @@ link_directories(${CHEWING_LIBRARY_DIRS})
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform_apple.cmake)
 
 # resources
-QT5_ADD_RESOURCES(qt_resources ${PROJECT_SOURCE_DIR}/rc/resources.qrc)
+QT6_ADD_RESOURCES(qt_resources ${PROJECT_SOURCE_DIR}/rc/resources.qrc)
 
 # i18n
 set(TRANSLATION_LIST en_US zh_TW)
@@ -139,7 +139,7 @@ foreach(TRANSLATION ${TRANSLATION_LIST})
     set(QM_FILE "${QM_DIR}/${CMAKE_PROJECT_NAME}_${TRANSLATION}.qm")
 
     add_custom_target("${TRANSLATION}-ts"
-        COMMAND ${Qt5_LUPDATE_EXECUTABLE} ${PROJECT_SOURCE_DIR}/src -ts ${TS_FILE}
+        COMMAND Qt6::lupdate ${PROJECT_SOURCE_DIR}/src -ts ${TS_FILE}
         DEPENDS prepare_lupdate
     )
     add_dependencies(lupdate "${TRANSLATION}-ts")
@@ -147,7 +147,7 @@ foreach(TRANSLATION ${TRANSLATION_LIST})
     add_custom_command(
         OUTPUT
             ${QM_FILE}
-        COMMAND ${Qt5_LRELEASE_EXECUTABLE} ${TS_FILE} -qm ${QM_FILE}
+        COMMAND Qt6::lrelease ${TS_FILE} -qm ${QM_FILE}
         DEPENDS
             prepare_lrelease
             ${TS_FILE}
@@ -156,26 +156,26 @@ foreach(TRANSLATION ${TRANSLATION_LIST})
 endforeach()
 
 add_custom_target(lrelease ALL DEPENDS ${QM_FILES})
-QT5_ADD_RESOURCES(qt_resources ${PROJECT_SOURCE_DIR}/ts/ts.qrc)
+QT6_ADD_RESOURCES(qt_resources ${PROJECT_SOURCE_DIR}/ts/ts.qrc)
 
 # exporter
 file(GLOB_RECURSE exporter_src ${PROJECT_SOURCE_DIR}/src/exporter/*)
 add_library(exporter STATIC ${exporter_src})
-target_link_libraries(exporter Qt5::Widgets)
+target_link_libraries(exporter Qt6::Widgets)
 
 # importer
 file(GLOB_RECURSE importer_src ${PROJECT_SOURCE_DIR}/src/importer/*)
 add_library(importer STATIC ${importer_src})
-target_link_libraries(importer Qt5::Widgets)
+target_link_libraries(importer Qt6::Widgets)
 
 # ui
 file(GLOB ui_src ${PROJECT_SOURCE_DIR}/src/ui/*)
-qt5_wrap_ui(ui ${ui_src})
+qt6_wrap_ui(ui ${ui_src})
 
 # util
 file(GLOB util_src ${PROJECT_SOURCE_DIR}/src/util/*)
 add_library(util STATIC ${util_src})
-target_link_libraries(util Qt5::Widgets)
+target_link_libraries(util Qt6::Widgets)
 
 # chewing-editor
 file(GLOB chewing-editor_src
@@ -194,19 +194,19 @@ target_link_libraries(chewing-editor
 )
 if(MSVC)
     target_link_libraries(chewing-editor  # append libraries
-        Qt5::Widgets
-        "${_qt5Widgets_install_prefix}/lib/qtpcre.lib"
-        "${_qt5Widgets_install_prefix}/lib/qtfreetype.lib"
-        "${_qt5Widgets_install_prefix}/lib/qtharfbuzzng.lib"
-        "${_qt5Widgets_install_prefix}/lib/Qt5PlatformSupport.lib"
-        "${_qt5Widgets_install_prefix}/plugins/platforms/qwindows.lib"
+        Qt6::Widgets
+        "${_qt6Widgets_install_prefix}/lib/qtpcre.lib"
+        "${_qt6Widgets_install_prefix}/lib/qtfreetype.lib"
+        "${_qt6Widgets_install_prefix}/lib/qtharfbuzzng.lib"
+        "${_qt6Widgets_install_prefix}/lib/Qt6PlatformSupport.lib"
+        "${_qt6Widgets_install_prefix}/plugins/platforms/qwindows.lib"
         imm32.lib
         winmm.lib
         Ws2_32.lib
     )
 endif()
 
-target_link_libraries(chewing-editor Qt5::Widgets)
+target_link_libraries(chewing-editor Qt6::Widgets)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/chewing-editor DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # icon
@@ -273,7 +273,7 @@ target_link_libraries(run-test
     util
     pthread
 )
-target_link_libraries(run-test Qt5::Widgets)
+target_link_libraries(run-test Qt6::Widgets)
 
 add_test(test run-test)
 

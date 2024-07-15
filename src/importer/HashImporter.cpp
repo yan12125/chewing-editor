@@ -81,7 +81,7 @@ static QString getBopomofoFromPhoneArray(const std::vector<uint16_t> &phone_arra
         }
         buf.append(' ');
     }
-    buf[buf.length()-1] = 0;
+    buf.chop(1);
 
     qDebug() << "buf = " << buf;
 
